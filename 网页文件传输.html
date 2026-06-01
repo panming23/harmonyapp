@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <title>网页文件传输 - 浏览器互传文件，0流量不限大小 | 免费在线文件传输工具</title>
+    <meta name="description" content="网页文件传输是一款免费在线文件传输工具，只需浏览器即可实现设备间互传文件。P2P直连传输，0流量消耗，不限文件大小，无需安装任何软件，手机电脑都能用。">
+    <meta name="keywords" content="网页文件传输,在线文件传输,浏览器传文件,P2P文件传输,免费传文件,跨设备传文件,局域网传输,WebRTC传输,手机传电脑,大文件传输">
+    <meta name="robots" content="index, follow">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
+    <meta name="author" content="网页文件传输">
+    <link rel="canonical" href="https://2939864240.github.io/网页文件传输.html">
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="网页文件传输 - 浏览器互传文件，0流量不限大小">
+    <meta property="og:description" content="免费在线文件传输工具，只需浏览器即可互传文件。P2P直连，0流量，不限大小，无需安装。">
+    <meta property="og:image" content="https://2939864240.github.io/网页文件传输/webfilepage_logo.png">
+    <meta property="og:url" content="https://2939864240.github.io/网页文件传输.html">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="网页文件传输">
+    <meta property="og:locale" content="zh_CN">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="网页文件传输 - 浏览器互传文件，0流量不限大小">
+    <meta name="twitter:description" content="免费在线文件传输工具，只需浏览器即可互传文件。P2P直连，0流量，不限大小，无需安装。">
+    <meta name="twitter:image" content="https://2939864240.github.io/网页文件传输/webfilepage_logo.png">
+
+    <!-- 结构化数据 - Schema.org JSON-LD -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        "name": "网页文件传输",
+        "description": "基于浏览器的P2P文件传输工具，无需安装，0流量消耗，不限文件大小",
+        "applicationCategory": "UtilitiesApplication",
+        "operatingSystem": "All",
+        "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "CNY"
+        },
+        "browserRequirements": "Requires JavaScript"
+    }
+    </script>
+
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/styles.css" rel="stylesheet">
+    <script src="js/jquery.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+
+    <style>
+        .hero-section {
+            text-align: center;
+            padding: 60px 20px 40px;
+        }
+        .hero-section img {
+            max-width: 180px;
+            margin-bottom: 20px;
+        }
+        .hero-section h1 {
+            font-size: 36px;
+            font-weight: bold;
+            color: #333;
+        }
+        .hero-section .tagline {
+            font-size: 18px;
+            color: #666;
+            margin-top: 10px;
+        }
+        .feature-section {
+            padding: 40px 0;
+        }
+        .feature-box {
+            text-align: center;
+            padding: 25px 15px;
+            background: rgba(255,255,255,0.85);
+            border-radius: 8px;
+            margin-bottom: 20px;
+            min-height: 200px;
+        }
+        .feature-box h3 {
+            font-size: 20px;
+            color: #2c7;
+            margin-bottom: 12px;
+        }
+        .feature-box p {
+            color: #555;
+            line-height: 1.8;
+        }
+        .screenshot-section {
+            padding: 40px 0;
+        }
+        .screenshot-section img {
+            width: 100%;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            margin-bottom: 20px;
+        }
+        .usage-steps {
+            padding: 40px 0;
+        }
+        .step-item {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 25px;
+            background: rgba(255,255,255,0.85);
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .step-num {
+            width: 40px;
+            height: 40px;
+            background: #2c7;
+            color: #fff;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 40px;
+            font-size: 20px;
+            font-weight: bold;
+            flex-shrink: 0;
+            margin-right: 15px;
+        }
+        .step-item h4 {
+            margin: 0 0 5px;
+            color: #333;
+        }
+        .step-item p {
+            margin: 0;
+            color: #666;
+        }
+        .faq-section {
+            padding: 40px 0;
+        }
+        .faq-item {
+            background: rgba(255,255,255,0.85);
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+        .faq-item h4 {
+            color: #2c7;
+            margin-bottom: 8px;
+        }
+        .faq-item p {
+            color: #555;
+            line-height: 1.8;
+        }
+        .back-link {
+            display: inline-block;
+            margin-top: 30px;
+            margin-bottom: 50px;
+            padding: 12px 30px;
+            background: #2c7;
+            color: #fff;
+            border-radius: 5px;
+            text-decoration: none;
+            font-size: 16px;
+        }
+        .back-link:hover {
+            background: #1a9;
+            color: #fff;
+            text-decoration: none;
+        }
+        .content-text {
+            background: rgba(255,255,255,0.85);
+            padding: 25px;
+            border-radius: 8px;
+            line-height: 2;
+            color: #444;
+            font-size: 15px;
+            margin-bottom: 20px;
+        }
+        .content-text h2 {
+            color: #333;
+            margin-top: 0;
+        }
+    </style>
+</head>
+<body>
+
+<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggle" data-toggle="collapse"
+                data-target="#example-navbar-collapse">
+            <span class="sr-only">切换导航</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="index.html">首页</a>
+    </div>
+    <div class="collapse navbar-collapse" id="example-navbar-collapse">
+        <ul class="nav navbar-nav">
+            <li class="active"><a href="网页文件传输.html">网页文件传输</a></li>
+            <li><a href="备注相机.html">备注相机</a></li>
+        </ul>
+    </div>
+</nav>
+
+<div class="container div1">
+
+    <!-- 顶部介绍 -->
+    <section class="hero-section">
+        <img src="网页文件传输/webfilepage_logo.png" alt="网页文件传输Logo - 免费在线P2P文件传输工具">
+        <h1>网页文件传输</h1>
+        <p class="tagline">收发只要浏览器，0流量不限文件大小</p>
+    </section>
+
+    <!-- 产品介绍文字 -->
+    <section>
+        <div class="content-text">
+            <h2>什么是网页文件传输？</h2>
+            <p>网页文件传输是一款<strong>完全免费的在线文件传输工具</strong>，基于WebRTC（网页实时通信）P2P技术开发。用户无需下载安装任何软件或App，只需在浏览器中打开网页，即可实现<strong>手机与电脑之间、电脑与电脑之间、甚至远程异地互传文件</strong>。</p>
+            <p>与传统网盘、微信、QQ等文件传输方式不同，网页文件传输采用<strong>点对点直连传输</strong>，文件数据不经过任何中间服务器，不仅传输速度更快，而且<strong>不受网络带宽限制、不消耗手机流量套餐</strong>。无论文件多大——几个GB的视频、几百MB的设计稿、成千上万张照片——都能轻松传输，没有大小限制。</p>
+            <p>适用于<strong>办公文件共享、旅行照片备份、学生作业提交、设计师素材交换</strong>等各类场景，是您日常工作和生活中不可或缺的效率工具。</p>
+        </div>
+    </section>
+
+    <!-- 核心特点 -->
+    <section class="feature-section">
+        <div class="row">
+            <div class="col-xs-12 col-sm-6 col-md-4">
+                <div class="feature-box">
+                    <h3>🌐 无需安装</h3>
+                    <p>纯网页端操作，打开浏览器即用。无需下载App、无需注册账号、无需登录，真正做到即开即传。</p>
+                </div>
+            </div>
+            <div class="col-xs-12 col-sm-6 col-md-4">
+                <div class="feature-box">
+                    <h3>📡 P2P直连传输</h3>
+                    <p>采用WebRTC点对点传输协议，文件直接在设备之间传输，不经过云端服务器中转，保障数据隐私安全。</p>
+                </div>
+            </div>
+            <div class="col-xs-12 col-sm-6 col-md-4">
+                <div class="feature-box">
+                    <h3>🆓 0流量消耗</h3>
+                    <p>同一局域网下传输完全不走外网流量；即使跨网络传输，也只消耗极少的信令数据，帮你节省手机流量。</p>
+                </div>
+            </div>
+            <div class="col-xs-12 col-sm-6 col-md-4">
+                <div class="feature-box">
+                    <h3>📁 不限文件大小</h3>
+                    <p>无论1KB还是10GB，统统支持传输。没有云盘的上传大小限制，大文件传输不再需要压缩分包。</p>
+                </div>
+            </div>
+            <div class="col-xs-12 col-sm-6 col-md-4">
+                <div class="feature-box">
+                    <h3>🔒 安全加密</h3>
+                    <p>传输通道采用DTLS-SRTP加密，端到端安全保护，确保你的文件在传输过程中不被窃取或篡改。</p>
+                </div>
+            </div>
+            <div class="col-xs-12 col-sm-6 col-md-4">
+                <div class="feature-box">
+                    <h3>⚡ 极速传输</h3>
+                    <p>局域网内传输速度可达百兆每秒，比传统U盘拷贝更快。异地传输自动选择最优路径，智能提速。</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 使用步骤 -->
+    <section class="usage-steps">
+        <h2 style="text-align:center; margin-bottom:30px; color:#333;">三步完成文件传输</h2>
+        <div class="step-item">
+            <div class="step-num">1</div>
+            <div>
+                <h4>打开网页</h4>
+                <p>在发送设备和接收设备上同时打开网页文件传输页面，系统自动生成配对房间号。</p>
+            </div>
+        </div>
+        <div class="step-item">
+            <div class="step-num">2</div>
+            <div>
+                <h4>建立连接</h4>
+                <p>输入相同的房间号（或扫描二维码），两台设备即通过P2P技术建立安全直连通道。</p>
+            </div>
+        </div>
+        <div class="step-item">
+            <div class="step-num">3</div>
+            <div>
+                <h4>开始传输</h4>
+                <p>选择文件或拖拽文件到页面，点击发送，文件即开始高速传输。支持批量发送和断点续传。</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 截图展示 -->
+    <section class="screenshot-section">
+        <h2 style="text-align:center; margin-bottom:30px; color:#333;">产品截图</h2>
+        <div class="row">
+            <div class="col-xs-12 col-sm-4">
+                <img src="网页文件传输/未命名 6_202605210413_57137.jpg" alt="网页文件传输界面截图 - 发送文件操作界面" loading="lazy">
+            </div>
+            <div class="col-xs-12 col-sm-4">
+                <img src="网页文件传输/未命名 5_202605210416_09220.jpg" alt="网页文件传输界面截图 - 文件接收界面" loading="lazy">
+            </div>
+            <div class="col-xs-12 col-sm-4">
+                <img src="网页文件传输/未命名 7_202605210414_48895.jpg" alt="网页文件传输界面截图 - 传输进度与历史记录" loading="lazy">
+            </div>
+        </div>
+    </section>
+
+    <!-- 适用场景 -->
+    <section>
+        <div class="content-text">
+            <h2>适用场景</h2>
+            <p><strong>📱 手机电脑互传：</strong>旅游拍照后想传到电脑修图？开会录音想发到手机？只需手机和电脑同时打开浏览器，输入配对码即可互传，无需数据线。</p>
+            <p><strong>🏢 办公文件共享：</strong>同事之间快速分享PPT、Word文档、Excel表格，不需要U盘拷贝，不需要登录微信网页版，保护工作隐私。</p>
+            <p><strong>🎓 学生作业提交：</strong>大作业素材包、视频作品太大发不了邮箱？用网页文件传输直接发给老师或同学，简单高效。</p>
+            <p><strong>🎨 设计师素材交换：</strong>PSD、AI、Sketch源文件动辄几百MB，用网页文件传输秒传完成，不压缩画质。</p>
+            <p><strong>🏠 家庭影音共享：</strong>下载的高清电影想在电视上看？电脑传到手机，手机投屏到电视，一气呵成。</p>
+        </div>
+    </section>
+
+    <!-- 常见问题 -->
+    <section class="faq-section">
+        <h2 style="text-align:center; margin-bottom:30px; color:#333;">常见问题</h2>
+        <div class="faq-item">
+            <h4>Q: 网页文件传输真的免费吗？</h4>
+            <p>完全免费，没有任何隐藏收费。我们承诺永久免费提供服务，不限制传输次数和文件大小。</p>
+        </div>
+        <div class="faq-item">
+            <h4>Q: 需要安装什么软件吗？</h4>
+            <p>不需要。只需要一个支持WebRTC的现代浏览器（如Chrome、Edge、Safari、Firefox），打开网页即可使用。</p>
+        </div>
+        <div class="faq-item">
+            <h4>Q: 传输的文件安全吗？会被别人看到吗？</h4>
+            <p>非常安全。文件通过P2P直连传输，不会上传到任何服务器。传输通道采用加密协议，只有您和接收方能看到文件内容。</p>
+        </div>
+        <div class="faq-item">
+            <h4>Q: 跨网络可以传输吗？（比如一个在公司，一个在家）</h4>
+            <p>可以。网页文件传输支持NAT穿透，即使两台设备在不同网络中，也能自动建立连接进行文件传输。</p>
+        </div>
+        <div class="faq-item">
+            <h4>Q: 支持哪些文件格式？</h4>
+            <p>支持所有文件格式——图片、视频、文档、压缩包、音频、文件夹……只要是文件，都可以传输。</p>
+        </div>
+    </section>
+
+    <!-- 底部导航 -->
+    <div style="text-align:center;">
+        <a href="index.html" class="back-link">← 返回首页</a>
+    </div>
+
+</div>
+
+</body>
+</html>
