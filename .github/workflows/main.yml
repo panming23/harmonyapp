@@ -3,7 +3,7 @@ name: Notify Bing IndexNow on Push
 on:
   push:
     branches:
-      - main
+      - master
 
 jobs:
   indexnow:
