@@ -1,0 +1,56 @@
+name: Notify Bing IndexNow on Push
+
+on:
+  push:
+    branches:
+      - master          # 你的 Pages 分支，改成你自己的
+
+jobs:
+  indexnow:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Get changed files
+        id: changed
+        run: |
+          # 获取本次 push 中修改/新增的 HTML 文件
+          FILES=$(git diff --name-only --diff-filter=ACM ${{ github.event.before }} ${{ github.sha }} | grep '\.html$' || true)
+
+          if [ -z "$FILES" ]; then
+            echo "no_change=true" >> $GITHUB_OUTPUT
+          else
+            echo "no_change=false" >> $GITHUB_OUTPUT
+            # 转成 JSON 数组格式
+            URLS="["
+            for f in $FILES; do
+              URLS="${URLS}\"https://harmony.panming.ccwu.cc/$f\","
+            done
+            URLS="${URLS%,}]"
+            echo "urls=$URLS" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Submit to Bing IndexNow
+        if: steps.changed.outputs.no_change != 'true'
+        run: |
+          curl -X POST "https://www.bing.com/indexnow" \
+            -H "Content-Type: application/json; charset=utf-8" \
+            -d '{
+              "host": "harmony.panming.ccwu.cc",
+              "key": "6cb2f11566cd472f933ed308c763b1fb",
+              "keyLocation": "https://harmony.panming.ccwu.cc/6cb2f11566cd472f933ed308c763b1fb.txt",
+              "urlList": ${{ steps.changed.outputs.urls }}
+            }'
+
+      - name: Submit to Yandex IndexNow（可选）
+        if: steps.changed.outputs.no_change != 'true'
+        run: |
+          curl -X POST "https://yandex.com/indexnow" \
+            -H "Content-Type: application/json; charset=utf-8" \
+            -d '{
+              "host": "harmony.panming.ccwu.cc",
+              "key": "6cb2f11566cd472f933ed308c763b1fb",
+              "keyLocation": "https://harmony.panming.ccwu.cc/6cb2f11566cd472f933ed308c763b1fb.txt",
+              "urlList": ${{ steps.changed.outputs.urls }}
+            }'
