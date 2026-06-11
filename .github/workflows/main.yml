@@ -3,7 +3,7 @@ name: Notify Bing IndexNow on Push
 on:
   push:
     branches:
-      - master
+      - main
 
 jobs:
   indexnow:
@@ -12,26 +12,52 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: List all HTML files for debugging
+        run: |
+          echo "=== 仓库目录结构 ==="
+          ls -la
+          echo ""
+          echo "=== 所有 HTML 文件 ==="
+          find . -name "*.html" -not -path "./.git/*" -not -path "./node_modules/*"
+
       - name: Build URL list and submit to Bing
         run: |
-          # 扫描仓库里所有 .html 文件，拼成完整 URL
-          URLS=$(find . -name "*.html" -not -path "./.git/*" | sed 's|^\./||' | sed 's|^|"https://harmony.panming.ccwu.cc/|' | sed 's|$|"|' | paste -sd "," -)
+          URLS=$(find . -name "*.html" -not -path "./.git/*" -not -path "./node_modules/*" \
+            | sed 's|^\./||' \
+            | sed 's|^|"https://harmony.panming.ccwu.cc/|' \
+            | sed 's|$|"|' \
+            | paste -sd "," - 2>/dev/null)
 
-          # 如果没有任何 HTML 文件，就退出
           if [ -z "$URLS" ]; then
-            echo "没有找到 HTML 文件，跳过"
-            exit 0
+            echo "❌ 没有找到 HTML 文件，请检查仓库结构"
+            echo "当前目录内容："
+            ls -R
+            exit 1
           fi
 
-          echo "准备提交以下 URL："
+          echo "✅ 准备提交以下 URL："
           echo "$URLS"
+          echo ""
 
-          # 提交到 Bing IndexNow
-          curl -X POST "https://www.bing.com/indexnow" \
+          echo "=== 正在提交到 Bing ==="
+          RESPONSE=$(curl -w "\n%{http_code}" -s -X POST "https://www.bing.com/indexnow" \
             -H "Content-Type: application/json; charset=utf-8" \
             -d "{
               \"host\": \"harmony.panming.ccwu.cc\",
               \"key\": \"6cb2f11566cd472f933ed308c763b1fb\",
               \"keyLocation\": \"https://harmony.panming.ccwu.cc/6cb2f11566cd472f933ed308c763b1fb.txt\",
               \"urlList\": [$URLS]
-            }"
+            }")
+
+          HTTP_CODE=$(echo "$RESPONSE" | tail -1)
+          BODY=$(echo "$RESPONSE" | sed '$d')
+
+          echo "HTTP 状态码: $HTTP_CODE"
+          echo "Bing 返回内容: $BODY"
+
+          if [ "$HTTP_CODE" = "200" ] || [ "$HTTP_CODE" = "202" ]; then
+            echo "✅ 提交成功！"
+          else
+            echo "❌ 提交失败 (HTTP $HTTP_CODE)"
+            exit 1
+          fi
