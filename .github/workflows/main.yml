@@ -24,7 +24,7 @@ jobs:
         run: |
           URLS=$(find . -name "*.html" -not -path "./.git/*" -not -path "./node_modules/*" \
             | sed 's|^\./||' \
-            | sed 's|^|"https://harmony.panming.ccwu.cc/|' \
+            | sed 's|^|"https://yingyong.panming.ccwu.cc/|' \
             | sed 's|$|"|' \
             | paste -sd "," - 2>/dev/null)
 
@@ -43,9 +43,9 @@ jobs:
           RESPONSE=$(curl -w "\n%{http_code}" -s -X POST "https://www.bing.com/indexnow" \
             -H "Content-Type: application/json; charset=utf-8" \
             -d "{
-              \"host\": \"harmony.panming.ccwu.cc\",
+              \"host\": \"yingyong.panming.ccwu.cc\",
               \"key\": \"6cb2f11566cd472f933ed308c763b1fb\",
-              \"keyLocation\": \"https://harmony.panming.ccwu.cc/6cb2f11566cd472f933ed308c763b1fb.txt\",
+              \"keyLocation\": \"https://yingyong.panming.ccwu.cc/6cb2f11566cd472f933ed308c763b1fb.txt\",
               \"urlList\": [$URLS]
             }")
 
