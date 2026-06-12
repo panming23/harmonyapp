@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <title>网页文件传输 - 浏览器互传文件，0流量不限大小 | 免费在线文件传输工具</title>
-    <meta name="description" content="网页文件传输是一款免费在线文件传输工具，只需浏览器即可实现设备间互传文件。0流量消耗，不限文件大小，只要安装一个客户端，其他手机电脑都连接。">
+    <meta name="description" content="网页文件传输是一款免费在线文件传输工具，一端安装客户端后其他设备用浏览器即可互传文件。P2P直连传输，0流量消耗，不限文件大小。">
     <meta name="keywords" content="网页文件传输,在线文件传输,浏览器传文件,免费传文件,跨设备传文件,局域网传输,WebRTC传输,手机传电脑,大文件传输">
     <meta name="robots" content="index, follow">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
@@ -11,7 +11,7 @@
 
     <!-- Open Graph -->
     <meta property="og:title" content="网页文件传输 - 浏览器互传文件，0流量不限大小">
-    <meta property="og:description" content="免费在线文件传输工具，只需浏览器即可互传文件。0流量，不限大小，无需安装。">
+    <meta property="og:description" content="免费在线文件传输工具，一端装客户端其他设备浏览器互传。0流量，不限大小。">
 
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="网页文件传输">
@@ -22,7 +22,7 @@
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="网页文件传输 - 浏览器互传文件，0流量不限大小">
-    <meta name="twitter:description" content="免费在线文件传输工具，只需浏览器即可互传文件。0流量，不限大小，无需安装。">
+    <meta name="twitter:description" content="免费在线文件传输工具，一端装客户端其他设备浏览器互传。0流量，不限大小。">
 
 
     <!-- 结构化数据 - Schema.org JSON-LD -->
@@ -31,7 +31,7 @@
         "@context": "https://schema.org",
         "@type": "SoftwareApplication",
         "name": "网页文件传输",
-        "description": "基于浏览器的P2P文件传输工具，无需安装，0流量消耗，不限文件大小",
+        "description": "基于WebRTC的P2P文件传输工具，一端安装客户端后其他设备浏览器互传，0流量消耗，不限文件大小",
         "applicationCategory": "UtilitiesApplication",
         "operatingSystem": "All",
         "offers": {
@@ -290,15 +290,22 @@
         <div class="step-item">
             <div class="step-num">1</div>
             <div>
-                <h4>打开网页</h4>
-                <p>在发送设备和接收设备上同时打开网页文件传输页面，系统自动生成配对带6位随机数的网页路径。</p>
+                <h4>安装客户端</h4>
+                <p>在其中一台设备上安装网页文件传输客户端，配对页面会自动生成带6位随机数的连接码。</p>
+            </div>
+        </div>
+        <div class="step-item">
+            <div class="step-num">2</div>
+            <div>
+                <h4>其他设备打开网页</h4>
+                <p>在另一台设备的浏览器中打开客户端显示的配对地址，两台设备即建立直连通道。</p>
             </div>
         </div>
         <div class="step-item">
             <div class="step-num">3</div>
             <div>
-                <h4>开始传输</h4>
-                <p>选择文件或拖拽文件到页面，点击发送，文件即开始高速传输。</p>
+                <h4>选择文件开始传输</h4>
+                <p>在任意一端选择文件或拖拽文件到页面，点击发送，文件即通过局域网高速传输。</p>
             </div>
         </div>
     </section>
@@ -314,24 +321,24 @@
         </div>
     </section>
 
-    <!-- 大文件传输完全指南 -->
+    <!-- P2P直连传输说明 -->
     <section style="padding: 40px 0;">
-        <h2 style="text-align:center; margin-bottom:30px; color:#333;">大文件传输完全指南</h2>
+        <h2 style="text-align:center; margin-bottom:30px; color:#333;">P2P直连传输说明</h2>
         <div class="faq-item">
-            <h4>为什么微信/QQ不适合传大文件？</h4>
-            <p>微信限制单文件最大100MB，视频还会自动压缩画质。QQ限制2GB稍好一些，但大文件上传慢、下载慢，且需要双方都安装QQ客户端。更重要的是，文件都经过腾讯服务器中转，隐私方面存在顾虑。</p>
+            <h4>什么是P2P直连传输？</h4>
+            <p>网页文件传输基于WebRTC协议，<strong>文件直接在设备之间传输，不经过任何中间服务器</strong>。相比传统方式需要先将文件上传至云端再下载，P2P直连省去了中转环节，速度更快、隐私更安全。</p>
         </div>
         <div class="faq-item">
-            <h4>云盘传输大文件的痛点</h4>
-            <p>百度网盘等云盘服务对大文件上传没有限制，但非会员下载速度被严重限制（常见几十KB/s），一个1GB的文件可能要下载几个小时。而且文件存在云端，无法保证隐私安全。如果要分享给其他人，对方还需要登录账号。</p>
+            <h4>传输速度有多快？</h4>
+            <p>在同一WiFi局域网环境下，实测传输速度通常在10-50MB/s之间，取决于路由器性能和设备WiFi能力。100MB文件约3-10秒，1GB文件约20-100秒。<strong>不设人工限速</strong>，速度取决于你的硬件和网络环境。</p>
         </div>
         <div class="faq-item">
-            <h4>为什么网页文件传输是最佳方案？</h4>
-            <p>网页文件传输采用WebRTC P2P技术，<strong>文件直接在设备之间传输，不经过任何中间服务器</strong>。局域网内速度可达几十MB/s，一个1GB的文件不到一分钟就能传完。不限大小、不限格式、不需要登录账号，手机电脑浏览器互传无障碍。</p>
+            <h4>是否真的不消耗手机流量？</h4>
+            <p>同一局域网下传输完全不走外网流量。跨网络传输时仅消耗极少信令数据用于建立连接，实际文件数据仍走直连通道。</p>
         </div>
         <div class="faq-item">
-            <h4>传输速度参考</h4>
-            <p>在WiFi局域网环境下，网页文件传输的实测传输速度通常在10-50MB/s之间，取决于路由器性能和设备WiFi芯片。100MB的文件3-10秒传完，1GB文件约20-100秒，10GB大文件约3-15分钟。<strong>没有人工限速</strong>，速度完全取决于你的硬件。</p>
+            <h4>文件大小有限制吗？</h4>
+            <p>没有人为限制，传输能力取决于设备可用内存和浏览器实现。常见浏览器可稳定传输GB级大文件。如需传输超大文件，建议分批发送以确保稳定。</p>
         </div>
     </section>
 
@@ -357,15 +364,19 @@
         <h2 style="text-align:center; margin-bottom:30px; color:#333;">常见问题</h2>
         <div class="faq-item">
             <h4>Q: 网页文件传输真的免费吗？</h4>
-            <p>完全免费，没有任何隐藏收费。我们承诺永久免费提供服务，不限制传输次数和文件大小。</p>
+            <p>完全免费，没有任何隐藏收费。我们承诺永久免费提供服务，不限制传输次数和文件大小。收入来源于网站广告，无需用户付费。</p>
         </div>
         <div class="faq-item">
-            <h4>Q: 其他系统设备需要安装什么软件吗？</h4>
-            <p>不需要。只需要一个支持WebRTC的现代浏览器（如Chrome、Edge、Safari、Firefox），打开网页即可使用。</p>
+            <h4>Q: 需要安装什么软件？</h4>
+            <p>需要在一台设备上安装客户端，其他设备只需使用支持WebRTC的现代浏览器（如Chrome、Edge、Safari、Firefox）打开网页即可互传文件，无需额外安装。</p>
         </div>
         <div class="faq-item">
             <h4>Q: 支持哪些文件格式？</h4>
-            <p>支持所有文件格式——图片、视频、文档、压缩包、音频、文件夹……只要是文件，都可以传输。</p>
+            <p>支持所有文件格式——图片、视频、文档、压缩包、音频等。</p>
+        </div>
+        <div class="faq-item">
+            <h4>Q: 传输过程安全吗？</h4>
+            <p>文件通过WebRTC通道直连传输，不经过任何服务器中转，数据不会存储在第三方。局域网内传输数据完全在本地网络内完成。</p>
         </div>
     </section>
 
@@ -373,7 +384,7 @@
     <section class="hero-section">
         <img src="网页文件传输/webfilepage_logo.png" alt="网页文件传输Logo - 免费文件传输工具">
         <h1>网页文件传输</h1>
-        <p class="tagline">收发只要浏览器，0流量不限文件大小</p>
+        <p class="tagline">一端装客户端，其他浏览器互传，0流量不限大小</p>
     </section>
 
     <!-- 底部导航 -->
