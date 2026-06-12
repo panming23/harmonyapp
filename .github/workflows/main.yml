@@ -145,8 +145,7 @@ jobs:
           if [ "$HTTP_CODE" = "200" ] || [ "$HTTP_CODE" = "202" ]; then
             echo "✅ Bing 提交成功！"
           else
-            echo "❌ Bing 提交失败"
-            exit 1
+            echo "⚠️ Bing 提交失败，待 Key 关联后生效"
           fi
 
       - name: 步骤3（扩展）— 提交 URL 到 IndexNow 通用端点
