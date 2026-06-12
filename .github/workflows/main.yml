@@ -14,15 +14,15 @@ jobs:
 
       - name: 步骤1 — 生成 API Key（已预置，无需重复生成）
         run: |
-          KEY="8da64fa874114422b661f0537b890731"
+          KEY="3c3755fb67764518b05bb88bb656e2f7"
           echo "✅ IndexNow API Key 已生成: $KEY"
           echo "   Key 为 32 位十六进制字符串，通过 Bing Webmaster Tools 获取"
 
       - name: 步骤2 — 托管 Key 文件到网站根目录（Option 1）
         run: |
-          KEY_FILE="8da64fa874114422b661f0537b890731.txt"
+          KEY_FILE="3c3755fb67764518b05bb88bb656e2f7.txt"
           KEY_URL="https://yingyong.panming.ccwu.cc/$KEY_FILE"
-          KEY="8da64fa874114422b661f0537b890731"
+          KEY="3c3755fb67764518b05bb88bb656e2f7"
 
           echo "=== IndexNow Step 2: Host your API key ==="
           echo ""
@@ -72,7 +72,7 @@ jobs:
           FAIL_COUNT=0
           SUCCESS_COUNT=0
 
-          ENCODED_KEY_LOCATION=$(python3 -c "import urllib.parse; print(urllib.parse.quote('https://yingyong.panming.ccwu.cc/8da64fa874114422b661f0537b890731.txt', safe=''))")
+          ENCODED_KEY_LOCATION=$(python3 -c "import urllib.parse; print(urllib.parse.quote('https://yingyong.panming.ccwu.cc/3c3755fb67764518b05bb88bb656e2f7.txt', safe=''))")
           ENDPOINTS="https://www.bing.com/indexnow https://api.indexnow.org/indexnow"
 
           while IFS= read -r URL; do
@@ -81,7 +81,7 @@ jobs:
             ENCODED_URL=$(python3 -c "import urllib.parse; print(urllib.parse.quote('$URL', safe=''))")
 
             for ENDPOINT in $ENDPOINTS; do
-              GET_URL="${ENDPOINT}?url=${ENCODED_URL}&key=8da64fa874114422b661f0537b890731&keyLocation=${ENCODED_KEY_LOCATION}"
+              GET_URL="${ENDPOINT}?url=${ENCODED_URL}&key=3c3755fb67764518b05bb88bb656e2f7&keyLocation=${ENCODED_KEY_LOCATION}"
 
               echo "→ GET $ENDPOINT"
               echo "  URL: $URL"
@@ -131,8 +131,8 @@ jobs:
             -H "Content-Type: application/json; charset=utf-8" \
             -d "{
               \"host\": \"yingyong.panming.ccwu.cc\",
-              \"key\": \"8da64fa874114422b661f0537b890731\",
-              \"keyLocation\": \"https://yingyong.panming.ccwu.cc/8da64fa874114422b661f0537b890731.txt\",
+              \"key\": \"3c3755fb67764518b05bb88bb656e2f7\",
+              \"keyLocation\": \"https://yingyong.panming.ccwu.cc/3c3755fb67764518b05bb88bb656e2f7.txt\",
               \"urlList\": [$URLS]
             }")
 
@@ -162,8 +162,8 @@ jobs:
             -H "Content-Type: application/json; charset=utf-8" \
             -d "{
               \"host\": \"yingyong.panming.ccwu.cc\",
-              \"key\": \"8da64fa874114422b661f0537b890731\",
-              \"keyLocation\": \"https://yingyong.panming.ccwu.cc/8da64fa874114422b661f0537b890731.txt\",
+              \"key\": \"3c3755fb67764518b05bb88bb656e2f7\",
+              \"keyLocation\": \"https://yingyong.panming.ccwu.cc/3c3755fb67764518b05bb88bb656e2f7.txt\",
               \"urlList\": [$URLS]
             }")
 
