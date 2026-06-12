@@ -1,4 +1,4 @@
-name: Notify Bing IndexNow on Push
+name: IndexNow — 自动提交 URL 到搜索引擎
 
 on:
   push:
@@ -12,15 +12,103 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: List all HTML files for debugging
+      - name: 步骤1 — 生成 API Key（已预置，无需重复生成）
         run: |
-          echo "=== 仓库目录结构 ==="
-          ls -la
-          echo ""
-          echo "=== 所有 HTML 文件 ==="
-          find . -name "*.html" -not -path "./.git/*" -not -path "./node_modules/*"
+          KEY="8da64fa874114422b661f0537b890731"
+          echo "✅ IndexNow API Key 已生成: $KEY"
+          echo "   Key 为 32 位十六进制字符串，通过 Bing Webmaster Tools 获取"
 
-      - name: Build URL list and submit to Bing
+      - name: 步骤2 — 托管 Key 文件到网站根目录（Option 1）
+        run: |
+          KEY_FILE="8da64fa874114422b661f0537b890731.txt"
+          KEY_URL="https://yingyong.panming.ccwu.cc/$KEY_FILE"
+          KEY="8da64fa874114422b661f0537b890731"
+
+          echo "=== IndexNow Step 2: Host your API key ==="
+          echo ""
+          echo "采用 Option 1: 将 Key 文件托管在网站根目录"
+          echo "Key 文件: $KEY_FILE"
+          echo "托管地址: $KEY_URL"
+          echo ""
+
+          # 验证 key 文件存在且编码正确
+          if [ ! -f "$KEY_FILE" ]; then
+            echo "❌ Key 文件不存在: $KEY_FILE"
+            echo "   请创建文件 $KEY_FILE，内容为: $KEY"
+            exit 1
+          fi
+
+          # 读取并清理内容（去除 BOM、换行、空格）
+          ACTUAL=$(sed '1s/^\xEF\xBB\xBF//' "$KEY_FILE" | tr -d '\n\r' | xargs)
+
+          if [ "$ACTUAL" != "$KEY" ]; then
+            echo "❌ Key 文件内容不正确！"
+            echo "   期望: $KEY"
+            echo "   实际: $ACTUAL"
+            echo "   文件编码应为 UTF-8，内容仅包含 Key 本身"
+            exit 1
+          fi
+
+          FILE_ENCODING=$(file -b --mime-encoding "$KEY_FILE")
+          echo "文件编码: $FILE_ENCODING"
+          echo "文件内容: $ACTUAL"
+          echo ""
+          echo "✅ Key 文件已正确托管（Option 1: 网站根目录）"
+          echo "   IndexNow 搜索引擎会自动在根目录查找该文件"
+
+      - name: 步骤2补充 — GET 方式提交到 Bing + IndexNow（每 URL 双端点）
+        run: |
+          URLS=$(find . -name "*.html" -not -path "./.git/*" -not -path "./node_modules/*" \
+            | sed 's|^\./||' \
+            | sed 's|^|https://yingyong.panming.ccwu.cc/|')
+
+          if [ -z "$URLS" ]; then
+            echo "❌ 没有找到 HTML 文件"
+            exit 1
+          fi
+
+          echo "=== GET 方式提交（每 URL 独立请求） ==="
+          echo ""
+          FAIL_COUNT=0
+          SUCCESS_COUNT=0
+
+          ENCODED_KEY_LOCATION=$(python3 -c "import urllib.parse; print(urllib.parse.quote('https://yingyong.panming.ccwu.cc/8da64fa874114422b661f0537b890731.txt', safe=''))")
+          ENDPOINTS="https://www.bing.com/indexnow https://api.indexnow.org/indexnow"
+
+          while IFS= read -r URL; do
+            [ -z "$URL" ] && continue
+
+            ENCODED_URL=$(python3 -c "import urllib.parse; print(urllib.parse.quote('$URL', safe=''))")
+
+            for ENDPOINT in $ENDPOINTS; do
+              GET_URL="${ENDPOINT}?url=${ENCODED_URL}&key=8da64fa874114422b661f0537b890731&keyLocation=${ENCODED_KEY_LOCATION}"
+
+              echo "→ GET $ENDPOINT"
+              echo "  URL: $URL"
+
+              RESPONSE=$(curl -w "\n%{http_code}" -s -X GET "$GET_URL")
+              HTTP_CODE=$(echo "$RESPONSE" | tail -1)
+
+              if [ "$HTTP_CODE" = "200" ] || [ "$HTTP_CODE" = "202" ]; then
+                echo "  ✅ 成功 (HTTP $HTTP_CODE)"
+                SUCCESS_COUNT=$((SUCCESS_COUNT + 1))
+              else
+                echo "  ❌ 失败 (HTTP $HTTP_CODE)"
+                FAIL_COUNT=$((FAIL_COUNT + 1))
+              fi
+            done
+          done <<EOF
+$URLS
+EOF
+
+          TOTAL=$((SUCCESS_COUNT + FAIL_COUNT))
+          echo ""
+          echo "=== GET 提交完成: 成功 $SUCCESS_COUNT / 总计 $TOTAL ==="
+          if [ "$FAIL_COUNT" -gt 0 ]; then
+            echo "⚠️ 有 $FAIL_COUNT 个 URL GET 提交失败，不影响后续步骤"
+          fi
+
+      - name: 步骤3 — POST JSON 方式批量提交到 Bing
         run: |
           URLS=$(find . -name "*.html" -not -path "./.git/*" -not -path "./node_modules/*" \
             | sed 's|^\./||' \
@@ -29,17 +117,18 @@ jobs:
             | paste -sd "," - 2>/dev/null)
 
           if [ -z "$URLS" ]; then
-            echo "❌ 没有找到 HTML 文件，请检查仓库结构"
-            echo "当前目录内容："
-            ls -R
+            echo "❌ 没有找到 HTML 文件"
             exit 1
           fi
 
-          echo "✅ 准备提交以下 URL："
+          echo "=== IndexNow Step 3: Submit URLs ==="
+          echo ""
+          echo "提交以下 URL："
           echo "$URLS"
           echo ""
 
-          echo "=== 正在提交到 Bing ==="
+          # Option 1: key 文件在根目录，key 和 keyLocation 参数可选但仍建议传入
+          echo "=== 提交到 Bing ==="
           RESPONSE=$(curl -w "\n%{http_code}" -s -X POST "https://www.bing.com/indexnow" \
             -H "Content-Type: application/json; charset=utf-8" \
             -d "{
@@ -53,16 +142,16 @@ jobs:
           BODY=$(echo "$RESPONSE" | sed '$d')
 
           echo "HTTP 状态码: $HTTP_CODE"
-          echo "Bing 返回内容: $BODY"
+          echo "返回内容: $BODY"
 
           if [ "$HTTP_CODE" = "200" ] || [ "$HTTP_CODE" = "202" ]; then
             echo "✅ Bing 提交成功！"
           else
-            echo "❌ Bing 提交失败 (HTTP $HTTP_CODE)"
+            echo "❌ Bing 提交失败"
             exit 1
           fi
 
-      - name: Submit to IndexNow (api.indexnow.org)
+      - name: 步骤3（扩展）— 提交 URL 到 IndexNow 通用端点
         run: |
           URLS=$(find . -name "*.html" -not -path "./.git/*" -not -path "./node_modules/*" \
             | sed 's|^\./||' \
@@ -70,11 +159,7 @@ jobs:
             | sed 's|$|"|' \
             | paste -sd "," - 2>/dev/null)
 
-          echo "✅ 准备提交以下 URL："
-          echo "$URLS"
-          echo ""
-
-          echo "=== 正在提交到 IndexNow 通用端点 ==="
+          echo "=== 提交到 api.indexnow.org（覆盖 Bing + Yandex + Seznam） ==="
           RESPONSE=$(curl -w "\n%{http_code}" -s -X POST "https://api.indexnow.org/indexnow" \
             -H "Content-Type: application/json; charset=utf-8" \
             -d "{
@@ -88,10 +173,10 @@ jobs:
           BODY=$(echo "$RESPONSE" | sed '$d')
 
           echo "HTTP 状态码: $HTTP_CODE"
-          echo "IndexNow 返回内容: $BODY"
+          echo "返回内容: $BODY"
 
           if [ "$HTTP_CODE" = "200" ] || [ "$HTTP_CODE" = "202" ]; then
             echo "✅ IndexNow 提交成功！"
           else
-            echo "⚠️ IndexNow 提交失败 (HTTP $HTTP_CODE)，不影响 CI 流程"
+            echo "⚠️ IndexNow 提交失败，不影响 CI 流程"
           fi
