@@ -21,7 +21,7 @@ jobs:
       - name: 步骤2 — 托管 Key 文件到网站根目录（Option 1）
         run: |
           KEY_FILE="3c3755fb67764518b05bb88bb656e2f7.txt"
-          KEY_URL="https://yingyong.panming.ccwu.cc/$KEY_FILE"
+          KEY_URL="https://huawei.panming.ccwu.cc/$KEY_FILE"
           KEY="3c3755fb67764518b05bb88bb656e2f7"
 
           echo "=== IndexNow Step 2: Host your API key ==="
@@ -60,7 +60,7 @@ jobs:
         run: |
           URLS=$(find . -name "*.html" -not -path "./.git/*" -not -path "./node_modules/*" \
             | sed 's|^\./||' \
-            | sed 's|^|https://yingyong.panming.ccwu.cc/|')
+            | sed 's|^|https://huawei.panming.ccwu.cc/|')
 
           if [ -z "$URLS" ]; then
             echo "❌ 没有找到 HTML 文件"
@@ -72,7 +72,7 @@ jobs:
           FAIL_COUNT=0
           SUCCESS_COUNT=0
 
-          ENCODED_KEY_LOCATION=$(python3 -c "import urllib.parse; print(urllib.parse.quote('https://yingyong.panming.ccwu.cc/3c3755fb67764518b05bb88bb656e2f7.txt', safe=''))")
+          ENCODED_KEY_LOCATION=$(python3 -c "import urllib.parse; print(urllib.parse.quote('https://huawei.panming.ccwu.cc/3c3755fb67764518b05bb88bb656e2f7.txt', safe=''))")
           ENDPOINTS="https://www.bing.com/indexnow https://api.indexnow.org/indexnow"
 
           while IFS= read -r URL; do
@@ -110,7 +110,7 @@ jobs:
         run: |
           URLS=$(find . -name "*.html" -not -path "./.git/*" -not -path "./node_modules/*" \
             | sed 's|^\./||' \
-            | sed 's|^|"https://yingyong.panming.ccwu.cc/|' \
+            | sed 's|^|"https://huawei.panming.ccwu.cc/|' \
             | sed 's|$|"|' \
             | paste -sd "," - 2>/dev/null)
 
@@ -130,9 +130,9 @@ jobs:
           RESPONSE=$(curl -w "\n%{http_code}" -s -X POST "https://www.bing.com/indexnow" \
             -H "Content-Type: application/json; charset=utf-8" \
             -d "{
-              \"host\": \"yingyong.panming.ccwu.cc\",
+              \"host\": \"huawei.panming.ccwu.cc\",
               \"key\": \"3c3755fb67764518b05bb88bb656e2f7\",
-              \"keyLocation\": \"https://yingyong.panming.ccwu.cc/3c3755fb67764518b05bb88bb656e2f7.txt\",
+              \"keyLocation\": \"https://huawei.panming.ccwu.cc/3c3755fb67764518b05bb88bb656e2f7.txt\",
               \"urlList\": [$URLS]
             }")
 
@@ -152,7 +152,7 @@ jobs:
         run: |
           URLS=$(find . -name "*.html" -not -path "./.git/*" -not -path "./node_modules/*" \
             | sed 's|^\./||' \
-            | sed 's|^|"https://yingyong.panming.ccwu.cc/|' \
+            | sed 's|^|"https://huawei.panming.ccwu.cc/|' \
             | sed 's|$|"|' \
             | paste -sd "," - 2>/dev/null)
 
@@ -160,9 +160,9 @@ jobs:
           RESPONSE=$(curl -w "\n%{http_code}" -s -X POST "https://api.indexnow.org/indexnow" \
             -H "Content-Type: application/json; charset=utf-8" \
             -d "{
-              \"host\": \"yingyong.panming.ccwu.cc\",
+              \"host\": \"huawei.panming.ccwu.cc\",
               \"key\": \"3c3755fb67764518b05bb88bb656e2f7\",
-              \"keyLocation\": \"https://yingyong.panming.ccwu.cc/3c3755fb67764518b05bb88bb656e2f7.txt\",
+              \"keyLocation\": \"https://huawei.panming.ccwu.cc/3c3755fb67764518b05bb88bb656e2f7.txt\",
               \"urlList\": [$URLS]
             }")
 
