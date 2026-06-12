@@ -4,12 +4,12 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## 项目概述
 
-鸿蒙工具软件推广站点，纯静态 HTML 页面，托管在 GitHub Pages，通过自定义域名 `harmony.panming.ccwu.cc` 提供服务。包含两个产品页面（网页文件传输、备注相机）和两个独立内容页（文件传输方式对比、工程拍照指南），共 5 个页面。
+鸿蒙工具软件推广站点，纯静态 HTML 页面，托管在 GitHub Pages，通过自定义域名 `yingyong.panming.ccwu.cc` 提供服务。包含两个产品页面（网页文件传输、备注相机）和两个独立内容页（文件传输方式对比、工程拍照指南），共 5 个页面。
 
 ## 部署与推送
 
 
-- **自定义域名:** `harmony.panming.ccwu.cc`（由根目录 `CNAME` 文件配置）
+- **自定义域名:** `yingyong.panming.ccwu.cc`（由根目录 `CNAME` 文件配置）
 
 
 
