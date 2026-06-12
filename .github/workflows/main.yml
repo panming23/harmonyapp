@@ -97,9 +97,7 @@ jobs:
                 FAIL_COUNT=$((FAIL_COUNT + 1))
               fi
             done
-          done <<EOF
-$URLS
-EOF
+          done < <(echo "$URLS")
 
           TOTAL=$((SUCCESS_COUNT + FAIL_COUNT))
           echo ""
