@@ -47,7 +47,7 @@ jobs:
           # 用 jq 构建 URL 列表并编码
           URLS=$(find . -name "*.html" -not -path "./.git/*" -not -path "./node_modules/*" \
             | sed 's|^\./||' \
-            | jq -Rr --arg host "$HOST" '"\($host)/\(.)" | @uri')
+            | jq -Rr --arg host "$HOST" '"https://\($host)/\(.)" | @uri')
 
           if [ -z "$URLS" ]; then
             echo "❌ 没有找到 HTML 文件"
@@ -93,7 +93,7 @@ jobs:
           # 用 jq 构建 JSON，自动处理中文文件名和转义
           JSON=$(find . -name "*.html" -not -path "./.git/*" -not -path "./node_modules/*" \
             | sed 's|^\./||' \
-            | jq -R --arg host "$HOST" '"\($host)/\(.)"' \
+            | jq -R --arg host "$HOST" '"https://\($host)/\(.)"' \
             | jq -s --arg host "$HOST" --arg key "$KEY" --arg kl "$KEY_LOCATION" \
               '{host: $host, key: $key, keyLocation: $kl, urlList: .}')
 
@@ -130,7 +130,7 @@ jobs:
 
           JSON=$(find . -name "*.html" -not -path "./.git/*" -not -path "./node_modules/*" \
             | sed 's|^\./||' \
-            | jq -R --arg host "$HOST" '"\($host)/\(.)"' \
+            | jq -R --arg host "$HOST" '"https://\($host)/\(.)"' \
             | jq -s --arg host "$HOST" --arg key "$KEY" --arg kl "$KEY_LOCATION" \
               '{host: $host, key: $key, keyLocation: $kl, urlList: .}')
 
