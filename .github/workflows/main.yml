@@ -14,13 +14,13 @@ jobs:
 
       - name: 步骤1 — 生成 API Key（已预置，无需重复生成）
         run: |
-          KEY="3c3755fb67764518b05bb88bb656e2f7"
+          KEY="4422be83dbb842808701629033895d26"
           echo "✅ IndexNow API Key 已生成: $KEY"
 
       - name: 步骤2 — 托管 Key 文件到网站根目录（Option 1）
         run: |
-          KEY_FILE="3c3755fb67764518b05bb88bb656e2f7.txt"
-          KEY="3c3755fb67764518b05bb88bb656e2f7"
+          KEY_FILE="4422be83dbb842808701629033895d26.txt"
+          KEY="4422be83dbb842808701629033895d26"
 
           echo "=== 托管地址: https://chengguo.panming.ccwu.cc/$KEY_FILE ==="
 
@@ -40,7 +40,7 @@ jobs:
       - name: 步骤2补充 — GET 方式提交（jq 编码中文 URL）
         run: |
           HOST="chengguo.panming.ccwu.cc"
-          KEY="3c3755fb67764518b05bb88bb656e2f7"
+          KEY="4422be83dbb842808701629033895d26"
           KEY_LOCATION="https://${HOST}/${KEY}.txt"
           ENDPOINTS="https://www.bing.com/indexnow https://api.indexnow.org/indexnow"
 
@@ -87,7 +87,7 @@ jobs:
       - name: 步骤3 — POST 提交到 Bing（jq 构建 JSON）
         run: |
           HOST="chengguo.panming.ccwu.cc"
-          KEY="3c3755fb67764518b05bb88bb656e2f7"
+          KEY="4422be83dbb842808701629033895d26"
           KEY_LOCATION="https://${HOST}/${KEY}.txt"
 
           # 用 jq 构建 JSON，自动处理中文文件名和转义
@@ -125,7 +125,7 @@ jobs:
       - name: 步骤3（扩展）— POST 提交到 IndexNow 通用端点
         run: |
           HOST="chengguo.panming.ccwu.cc"
-          KEY="3c3755fb67764518b05bb88bb656e2f7"
+          KEY="4422be83dbb842808701629033895d26"
           KEY_LOCATION="https://${HOST}/${KEY}.txt"
 
           JSON=$(find . -name "*.html" -not -path "./.git/*" -not -path "./node_modules/*" \
