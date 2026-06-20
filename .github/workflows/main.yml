@@ -45,9 +45,9 @@ jobs:
           ENDPOINTS="https://www.bing.com/indexnow https://api.indexnow.org/indexnow"
 
           # 用 jq 构建 URL 列表并编码
-          URLS=$(find . -name "*.html" -not -path "./.git/*" -not -path "./node_modules/*" \
+          URLS=$(find . -name "*.html" -not -path "./.git/*" -not -path "./node_modules/*" -not -name "google*.html" \
             | sed 's|^\./||' \
-            | jq -Rr --arg host "$HOST" '"https://\($host)/\(.)" | @uri')
+            | jq -Rr --arg host "$HOST" '"https://\($host)/\(. | @uri)"')
 
           if [ -z "$URLS" ]; then
             echo "❌ 没有找到 HTML 文件"
@@ -91,9 +91,9 @@ jobs:
           KEY_LOCATION="https://${HOST}/${KEY}.txt"
 
           # 用 jq 构建 JSON，自动处理中文文件名和转义
-          JSON=$(find . -name "*.html" -not -path "./.git/*" -not -path "./node_modules/*" \
+          JSON=$(find . -name "*.html" -not -path "./.git/*" -not -path "./node_modules/*" -not -name "google*.html" \
             | sed 's|^\./||' \
-            | jq -R --arg host "$HOST" '"https://\($host)/\(.)"' \
+            | jq -R --arg host "$HOST" '"https://\($host)/\(. | @uri)"' \
             | jq -s --arg host "$HOST" --arg key "$KEY" --arg kl "$KEY_LOCATION" \
               '{host: $host, key: $key, keyLocation: $kl, urlList: .}')
 
@@ -128,9 +128,9 @@ jobs:
           KEY="4422be83dbb842808701629033895d26"
           KEY_LOCATION="https://${HOST}/${KEY}.txt"
 
-          JSON=$(find . -name "*.html" -not -path "./.git/*" -not -path "./node_modules/*" \
+          JSON=$(find . -name "*.html" -not -path "./.git/*" -not -path "./node_modules/*" -not -name "google*.html" \
             | sed 's|^\./||' \
-            | jq -R --arg host "$HOST" '"https://\($host)/\(.)"' \
+            | jq -R --arg host "$HOST" '"https://\($host)/\(. | @uri)"' \
             | jq -s --arg host "$HOST" --arg key "$KEY" --arg kl "$KEY_LOCATION" \
               '{host: $host, key: $key, keyLocation: $kl, urlList: .}')
 
