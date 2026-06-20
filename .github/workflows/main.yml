@@ -61,6 +61,8 @@ jobs:
             }
           }
           walk('.');
+          // 补充根域名首页
+          urls.push('https://' + host + '/');
           urls.sort();
 
           const data = { host, key, keyLocation, urlList: urls };
