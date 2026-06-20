@@ -28,20 +28,22 @@ jobs:
             exit 1
           fi
 
-          echo "✅ Key 文件验证通过: https://chengguo.panming.ccwu.cc/$KEY_FILE"
+          echo "✅ Key 文件验证通过"
 
-      - name: 步骤2 — GET 逐个提交（含延时防限流）
+      - name: 步骤2 — 生成提交 JSON 并批量 POST 到 Bing
         run: |
           HOST="chengguo.panming.ccwu.cc"
           KEY="4422be83dbb842808701629033895d26"
           KEY_LOCATION="https://${HOST}/${KEY}.txt"
-          ENDPOINTS="https://www.bing.com/indexnow https://api.indexnow.org/indexnow"
 
-          URLS=$(node -e "
+          # 用 Node.js 扫描 HTML 文件并生成 JSON，直接写入临时文件
+          node -e "
           const fs = require('fs');
           const path = require('path');
 
           const host = '${HOST}';
+          const key = '${KEY}';
+          const keyLocation = '${KEY_LOCATION}';
           const urls = [];
 
           function walk(dir) {
@@ -53,33 +55,115 @@ jobs:
                 walk(full);
               } else if (e.name.endsWith('.html') && !e.name.startsWith('google')) {
                 const rel = path.relative('.', full);
-                urls.push('https://' + host + '/' + encodeURIComponent(rel));
+                const encoded = rel.split('/').map(encodeURIComponent).join('/');
+                urls.push('https://' + host + '/' + encoded);
               }
             }
           }
           walk('.');
           urls.sort();
-          for (const u of urls) console.log(u);
-          ")
 
-          if [ -z "$URLS" ]; then
-            echo "❌ 没有找到 HTML 文件"
+          const data = { host, key, keyLocation, urlList: urls };
+          fs.writeFileSync('/tmp/indexnow.json', JSON.stringify(data));
+          " 2>&1
+
+          if [ ! -f /tmp/indexnow.json ]; then
+            echo "❌ 生成 JSON 失败"
             exit 1
           fi
 
-          echo "=== 找到以下页面 ==="
-          echo "$URLS"
+          echo "=== 提交的 URL 列表 ==="
+          node -e "
+          const data = JSON.parse(require('fs').readFileSync('/tmp/indexnow.json', 'utf8'));
+          console.log('共 ' + data.urlList.length + ' 个 URL:');
+          data.urlList.forEach((u, i) => console.log('  ' + (i + 1) + '. ' + u));
+          "
           echo ""
 
-          echo "=== GET 方式提交（每条间隔 2 秒，防止限流） ==="
+          echo "=== POST 到 Bing ==="
+          RESPONSE=$(curl -s -w "\n%{http_code}" --json @/tmp/indexnow.json "https://www.bing.com/indexnow")
+
+          HTTP_CODE=$(echo "$RESPONSE" | tail -1)
+          BODY=$(echo "$RESPONSE" | sed '$d')
+
+          echo "HTTP 状态码: $HTTP_CODE"
+          echo "响应内容: $BODY"
+
+          case "$HTTP_CODE" in
+            200|202)
+              echo "✅ Bing POST 批量提交成功（${HOST} 共 $(node -e "console.log(JSON.parse(require('fs').readFileSync('/tmp/indexnow.json','utf8')).urlList.length)") 个 URL）"
+              ;;
+            400)
+              echo "❌ 请求格式错误，请检查 JSON 结构"
+              ;;
+            403)
+              echo "❌ Key 无效或未关联此站点"
+              ;;
+            422)
+              echo "❌ URL 格式不正确"
+              ;;
+            429)
+              echo "⚠️ 请求过于频繁，稍后自动重试"
+              ;;
+            *)
+              echo "⚠️ 未知响应"
+              ;;
+          esac
+
+      - name: 步骤3 — POST 到 IndexNow 通用端点（覆盖 Yandex / Seznam）
+        run: |
+          if [ ! -f /tmp/indexnow.json ]; then
+            echo "⚠️ JSON 文件不存在，跳过此步骤"
+            exit 0
+          fi
+
+          echo "=== POST 到 api.indexnow.org ==="
+          RESPONSE=$(curl -s -w "\n%{http_code}" --json @/tmp/indexnow.json "https://api.indexnow.org/indexnow")
+
+          HTTP_CODE=$(echo "$RESPONSE" | tail -1)
+          BODY=$(echo "$RESPONSE" | sed '$d')
+
+          echo "HTTP 状态码: $HTTP_CODE"
+          echo "响应内容: $BODY"
+
+          if [ "$HTTP_CODE" = "200" ] || [ "$HTTP_CODE" = "202" ]; then
+            echo "✅ IndexNow 通用端点提交成功"
+          else
+            echo "⚠️ IndexNow 通用端点提交失败（不影响 Bing 收录）"
+          fi
+
+      - name: 步骤4 — GET 逐个提交（兜底，每条间隔 2 秒）
+        run: |
+          if [ ! -f /tmp/indexnow.json ]; then
+            echo "⚠️ JSON 文件不存在，跳过此步骤"
+            exit 0
+          fi
+
+          HOST="chengguo.panming.ccwu.cc"
+          KEY="4422be83dbb842808701629033895d26"
+          KEY_LOCATION="https://${HOST}/${KEY}.txt"
+          ENDPOINTS="https://www.bing.com/indexnow https://api.indexnow.org/indexnow"
+
+          # 从 JSON 文件读取 URL 列表
+          URLS=$(node -e "
+          const data = JSON.parse(require('fs').readFileSync('/tmp/indexnow.json', 'utf8'));
+          for (const u of data.urlList) console.log(u);
+          ")
+
+          if [ -z "$URLS" ]; then
+            echo "❌ URL 列表为空"
+            exit 0
+          fi
+
+          echo "=== GET 方式提交（每条间隔 2 秒） ==="
           FAIL_COUNT=0
           SUCCESS_COUNT=0
+          ENCODED_KL=$(node -e "console.log(encodeURIComponent('${KEY_LOCATION}'))")
 
           while IFS= read -r URL; do
             [ -z "$URL" ] && continue
 
             ENCODED_URL=$(node -e "console.log(encodeURIComponent('${URL}'))")
-            ENCODED_KL=$(node -e "console.log(encodeURIComponent('${KEY_LOCATION}'))")
 
             for ENDPOINT in $ENDPOINTS; do
               GET_URL="${ENDPOINT}?url=${ENCODED_URL}&key=${KEY}&keyLocation=${ENCODED_KL}"
@@ -102,115 +186,3 @@ jobs:
           TOTAL=$((SUCCESS_COUNT + FAIL_COUNT))
           echo ""
           echo "=== GET 完成: 成功 $SUCCESS_COUNT / 总计 $TOTAL ==="
-
-      - name: 步骤3 — POST 批量提交到 Bing
-        run: |
-          HOST="chengguo.panming.ccwu.cc"
-          KEY="4422be83dbb842808701629033895d26"
-          KEY_LOCATION="https://${HOST}/${KEY}.txt"
-
-          JSON=$(node -e "
-          const fs = require('fs');
-          const path = require('path');
-
-          const host = '${HOST}';
-          const key = '${KEY}';
-          const keyLocation = '${KEY_LOCATION}';
-          const urls = [];
-
-          function walk(dir) {
-            const entries = fs.readdirSync(dir, { withFileTypes: true });
-            for (const e of entries) {
-              if (e.name.startsWith('.') || e.name === 'node_modules') continue;
-              const full = path.join(dir, e.name);
-              if (e.isDirectory()) {
-                walk(full);
-              } else if (e.name.endsWith('.html') && !e.name.startsWith('google')) {
-                const rel = path.relative('.', full);
-                urls.push('https://' + host + '/' + encodeURIComponent(rel));
-              }
-            }
-          }
-          walk('.');
-          urls.sort();
-
-          const data = { host, key, keyLocation, urlList: urls };
-          console.log(JSON.stringify(data));
-          ")
-
-          if [ -z "$JSON" ]; then
-            echo "❌ 没有找到 HTML 文件"
-            exit 1
-          fi
-
-          echo "=== 提交到 Bing ==="
-          echo "$JSON" | node -e "console.log(JSON.stringify(JSON.parse(require('fs').readFileSync(0,'utf8')).urlList, null, 2))"
-          echo ""
-
-          RESPONSE=$(curl -w "\n%{http_code}" -s -X POST "https://www.bing.com/indexnow" \
-            -H "Content-Type: application/json; charset=utf-8" \
-            -d "$JSON")
-
-          HTTP_CODE=$(echo "$RESPONSE" | tail -1)
-          BODY=$(echo "$RESPONSE" | sed '$d')
-
-          echo "状态码: $HTTP_CODE"
-          echo "返回: $BODY"
-
-          if [ "$HTTP_CODE" = "200" ] || [ "$HTTP_CODE" = "202" ]; then
-            echo "✅ Bing POST 批量提交成功！"
-          else
-            echo "⚠️ Bing POST 提交失败"
-          fi
-
-      - name: 步骤4 — POST 批量提交到 IndexNow 通用端点
-        run: |
-          HOST="chengguo.panming.ccwu.cc"
-          KEY="4422be83dbb842808701629033895d26"
-          KEY_LOCATION="https://${HOST}/${KEY}.txt"
-
-          JSON=$(node -e "
-          const fs = require('fs');
-          const path = require('path');
-
-          const host = '${HOST}';
-          const key = '${KEY}';
-          const keyLocation = '${KEY_LOCATION}';
-          const urls = [];
-
-          function walk(dir) {
-            const entries = fs.readdirSync(dir, { withFileTypes: true });
-            for (const e of entries) {
-              if (e.name.startsWith('.') || e.name === 'node_modules') continue;
-              const full = path.join(dir, e.name);
-              if (e.isDirectory()) {
-                walk(full);
-              } else if (e.name.endsWith('.html') && !e.name.startsWith('google')) {
-                const rel = path.relative('.', full);
-                urls.push('https://' + host + '/' + encodeURIComponent(rel));
-              }
-            }
-          }
-          walk('.');
-          urls.sort();
-
-          const data = { host, key, keyLocation, urlList: urls };
-          console.log(JSON.stringify(data));
-          ")
-
-          echo "=== 提交到 api.indexnow.org ==="
-          RESPONSE=$(curl -w "\n%{http_code}" -s -X POST "https://api.indexnow.org/indexnow" \
-            -H "Content-Type: application/json; charset=utf-8" \
-            -d "$JSON")
-
-          HTTP_CODE=$(echo "$RESPONSE" | tail -1)
-          BODY=$(echo "$RESPONSE" | sed '$d')
-
-          echo "状态码: $HTTP_CODE"
-          echo "返回: $BODY"
-
-          if [ "$HTTP_CODE" = "200" ] || [ "$HTTP_CODE" = "202" ]; then
-            echo "✅ IndexNow POST 批量提交成功！"
-          else
-            echo "⚠️ IndexNow POST 提交失败"
-          fi
